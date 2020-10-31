@@ -37,19 +37,36 @@ var fightOrSkip = function () {
 };
 
 
-var fight = function (enemy) {
+var fight = function(enemy) {
+    // keep track of who goes first
+    var isPlayerTurn = true;
+
+    //randomly change turn order
+    if (Math.random() > 0.5) {
+        isPlayerTurn = false;
+    }
+
     while (playerInfo.health > 0 && enemy.health > 0) {
-        //ask player if they'd like to fight or skip using fightOrSkip function
-        if (fightOrSkip()) {
-            //if true, leave fight by breaking the loop
-            break;
-        }        
+        if (isPlayerTurn)  {
+            //ask player if they'd like to fight or skip using fightOrSkip function
+            if (fightOrSkip()) {
+                //if true, leave fight by breaking the loop
+                break;
+            }        
         // generate  random damage value based on player's attack power
         var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
 
+        //remove enemy's health byu subtractin g the amount we set in the damage variable
         enemy.health = Math.max(0, enemy.health - damage);
         console.log(
-            playerInfo.name + " attacked " + enemy.name + ". " + enemy.name + " now has " + enemy.health + " health remaining."
+            playerInfo.name +
+            " attacked " + 
+            enemy.name + 
+            ". " + 
+            enemy.name + 
+            " now has " + 
+            enemy.health + 
+            " health remaining."
         );
 
         //check enemy's health
@@ -64,13 +81,22 @@ var fight = function (enemy) {
         } else {
             window.alert(enemy.name + " still has " + enemy.health + " health left.");
         }
-
+        // player gets attacked first
+    } else {
         //generate random damage value based on player's health points
         var damage = randomNumber(enemy.attack - 3, enemy.attack);
 
+        //remove player's health by subtracting the amount we set in the damage variable
         playerInfo.health = Math.max(0, playerInfo.health - damage);
         console.log(
-            enemy.name + " attacked " + playerInfo.name + ". " + playerInfo.name + " now has " + playerInfo.health + " health remaining."
+            enemy.name + 
+            " attacked " 
+            + playerInfo.name + 
+            ". " + 
+            playerInfo.name + 
+            " now has " + 
+            playerInfo.health + 
+            " health remaining."
         );
 
         //check player's health
@@ -78,10 +104,12 @@ var fight = function (enemy) {
             window.alert(playerInfo.name + " has died!");
             // leave while() loop if player is dead
             break;
-        }
-        else {
+        } else {
             window.alert(playerInfo.name + " still has " + playerInfo.health + " health left.");
         }
+    }
+    // switch turn order for next round
+    isPlayerTurn = !isPlayerTurn;
     }
 };
 
@@ -219,7 +247,7 @@ var playerInfo = {
         }
     },
     upgradeAttack: function () {
-        if (this, money >= 7) {
+        if (this.money >= 7) {
             window.alert("Upgrading player's attack by 6 for 7 dollars.");
             this.attack += 6;
             this.money -= 7;
